@@ -1,6 +1,6 @@
 # 🚀 Focus Vocab
 
-Một con app học từ vựng do chính tui build để tự học.
+Một con app học từ vựng do chính tui build để tự học (thực ra là vide code lol).
 
 Không quảng cáo.  
 Không màu mè dopamine rẻ tiền.  
