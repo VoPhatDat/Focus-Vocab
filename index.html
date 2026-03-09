@@ -1599,7 +1599,7 @@
 
             getNextVocab: function() {
                 if (!this.sortedPool || this.sortedPool.length === 0) {
-                    return { word: "Empty", ipa: "/.../", translation: "Không có từ vựng nào trong kho." };
+                    return { word: "Empty", ipa: "/.../", translation: "Không có từ vựng nào trong kho.", pos: "" };
                 }
                 const w = this.sortedPool[this.currentIndex];
                 this.currentIndex++;
@@ -1683,65 +1683,96 @@
                     const el = document.createElement('div');
                     el.className = 'zen-word-void'; 
                     
-                    el.innerHTML = `
-                        <div class="text-center px-4 w-full">
-                            <h2 class="text-6xl md:text-[7rem] serif-font text-white tracking-wide mb-4 leading-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.2)] break-words">${w.word}</h2>
-                            <p class="text-base md:text-2xl text-purple-400/80 code-font tracking-[0.3em] mb-8 opacity-90">${w.ipa || '...'}</p>
-                            <div class="mx-auto w-16 h-[1px] bg-slate-700/80 mb-6 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
-                            <p class="text-xs md:text-xl text-slate-300 font-light tracking-[0.2em] uppercase max-w-2xl mx-auto break-words">${w.translation}</p>
-                        </div>
-                    `;
+        // Thay el.innerHTML trong runVoidMode:
+        el.innerHTML = `
+        <div class="text-center px-6 w-full flex flex-col items-center">
+            <div class="flex items-end justify-center gap-3 mb-4">
+                <h2 class="text-7xl md:text-[8rem] serif-font text-white font-semibold tracking-wide leading-tight drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] break-words">
+                    ${w.word}
+                </h2>
+                <span class="mb-4 text-xs md:text-sm uppercase tracking-[0.2em] text-purple-400 font-black border-2 border-purple-500/30 px-3 py-1 rounded-full bg-purple-500/10 backdrop-blur-md shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                    ${w.pos || 'UNK'}
+                </span>
+            </div>
+
+            <div class="mb-8 opacity-60">
+                <span class="text-sm md:text-lg text-cyan-400/80 code-font tracking-[0.4em]">
+                    ${w.ipa || ''}
+                </span>
+            </div>
+
+            <div class="w-20 h-[1px] bg-gradient-to-r from-transparent via-slate-600 to-transparent mb-8 opacity-30"></div>
+
+            <p class="text-sm md:text-xl text-slate-300 font-light tracking-[0.15em] uppercase max-w-2xl leading-relaxed">
+                ${w.translation}
+            </p>
+        </div>
+        `;
                     this.canvas.appendChild(el);
                 };
                 spawn(); this.intervalIds.push(setInterval(spawn, 7000)); 
             },
 
-            runConstellationMode: function() {
-                const maxWords = 4; 
-                let activeCount = 0;
-                this.quadrant = 0; // Reset khu vực spawn
+        runConstellationMode: function() {
+            const maxWords = 4; 
+            let activeCount = 0;
+            this.quadrant = 0; // Reset khu vực spawn
 
-                const spawnFloat = () => {
-                    if (!this.isActive || activeCount >= maxWords) return;
-                    const w = this.getNextVocab();
-                    const el = document.createElement('div');
-                    el.className = 'zen-word-float'; 
-                    
-                    // Logic chia màn hình thành 4 phần (Quadrants) để tránh chồng chữ
-                    // Q0: Trái Trên | Q1: Phải Trên | Q2: Trái Dưới | Q3: Phải Dưới
-                    const qX = (this.quadrant % 2) * 50; 
-                    const qY = Math.floor(this.quadrant / 2) * 50; 
-                    
-                    const startX = qX + 10 + Math.random() * 25; // Random trong khoảng 10-35% của mỗi góc
-                    const startY = qY + 10 + Math.random() * 25; 
-                    
-                    this.quadrant = (this.quadrant + 1) % 4; // Xoay vòng
-
-                    el.style.left = `${startX}%`; 
-                    el.style.top = `${startY}%`;
-                    const scale = 0.8 + Math.random() * 0.4; 
-                    el.style.transform = `scale(${scale})`;
-
-                    el.innerHTML = `
-                        <div class="text-center px-4 flex flex-col items-center">
-                            <div class="w-1.5 h-1.5 bg-purple-400 rounded-full mb-3 shadow-[0_0_10px_#a855f7] animate-pulse"></div>
-                            <h2 class="text-4xl md:text-5xl serif-font text-white/90 tracking-wide mb-2 break-words max-w-sm drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">${w.word}</h2>
-                            <p class="text-[10px] md:text-xs text-purple-400/80 code-font tracking-[0.2em] mb-3">${w.ipa || '...'}</p>
-                            <p class="text-[11px] md:text-sm text-slate-300 font-light tracking-[0.2em] uppercase max-w-xs break-words drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">${w.translation}</p>
-                        </div>
-                    `;
-                    this.canvas.appendChild(el); 
-                    activeCount++;
-                    
-                    setTimeout(() => { 
-                        if (this.canvas.contains(el)) { el.remove(); activeCount--; } 
-                    }, 18000); 
-                };
+            const spawnFloat = () => {
+                if (!this.isActive || activeCount >= maxWords) return;
+                const w = this.getNextVocab();
+                const el = document.createElement('div');
+                el.className = 'zen-word-float'; 
                 
-                spawnFloat(); 
-                this.intervalIds.push(setInterval(spawnFloat, 4500)); 
-            }
-        };
+                // Logic chia màn hình thành 4 phần (Quadrants) để tránh chồng chữ
+                // Q0: Trái Trên | Q1: Phải Trên | Q2: Trái Dưới | Q3: Phải Dưới
+                const qX = (this.quadrant % 2) * 50; 
+                const qY = Math.floor(this.quadrant / 2) * 50; 
+                
+                const startX = qX + 10 + Math.random() * 25; // Random trong khoảng 10-35% của mỗi góc
+                const startY = qY + 10 + Math.random() * 25; 
+                
+                this.quadrant = (this.quadrant + 1) % 4; // Xoay vòng
+
+                el.style.left = `${startX}%`; 
+                el.style.top = `${startY}%`;
+                const scale = 0.8 + Math.random() * 0.4; 
+                el.style.transform = `scale(${scale})`;
+
+                // Thay el.innerHTML trong runConstellationMode:
+                el.innerHTML = `
+                <div class="flex flex-col items-center px-4 group">
+                    <div class="w-1.5 h-1.5 bg-purple-500/60 rounded-full mb-3 shadow-[0_0_15px_#a855f7]"></div>
+
+                    <div class="flex items-end gap-2 mb-2">
+                        <h2 class="text-3xl md:text-5xl serif-font text-white/95 tracking-widest leading-none">
+                            ${w.word}
+                        </h2>
+                        <span class="text-[9px] md:text-[11px] uppercase text-purple-400 font-black border border-purple-500/30 px-2 py-0.5 rounded bg-purple-500/10 mb-1 shadow-[0_0_10px_rgba(168,85,247,0.1)]">
+                            ${w.pos || ''}
+                        </span>
+                    </div>
+                    
+                    <div class="flex flex-col items-center opacity-40 group-hover:opacity-100 transition-opacity duration-700">
+                        <span class="text-[10px] text-cyan-700/60 code-font tracking-widest mb-1">${w.ipa || '...'}</span>
+                        <p class="text-[11px] md:text-sm text-slate-500 font-medium tracking-[0.15em] uppercase border-t border-white/5 pt-1">
+                            ${w.translation}
+                        </p>
+                    </div>
+                </div>
+                `;
+                this.canvas.appendChild(el); 
+                activeCount++;
+                
+                setTimeout(() => { 
+                    if (this.canvas.contains(el)) { el.remove(); activeCount--; } 
+                }, 18000); 
+            };
+            
+            spawnFloat(); 
+            this.intervalIds.push(setInterval(spawnFloat, 4500)); 
+        }
+    };
 
         function cardClickAction() {
             if (session.mode === 'flashcard') document.getElementById('card-inner').classList.toggle('flipped');
