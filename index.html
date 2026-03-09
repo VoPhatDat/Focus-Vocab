@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOCUS_VOCAB v0.8.1 - Zen Refined</title>
+    <title>FOCUS_VOCAB v0.8.2 - Zen Refined</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600&family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
         #view-zen {
             background-color: #020203; 
             background-image: radial-gradient(circle at 50% 50%, #0a0a0f 0%, #020203 100%);
-            cursor: pointer; /* Báo hiệu có thể click */
+            cursor: pointer;
         }
         
         .zen-fade-in { animation: zenFadeIn 1s forwards; }
@@ -41,16 +41,16 @@
             animation: voidBreathe 7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; z-index: 10;
         }
 
-        /* MODE 2: CHÒM SAO */
+        /* MODE 2: CHÒM SAO (REWORKED) */
         @keyframes driftGently {
-            0% { opacity: 0; transform: translateY(20px) scale(0.9); filter: blur(5px); }
-            20% { opacity: 0.6; transform: translateY(0px) scale(1); filter: blur(0px); }
-            80% { opacity: 0.6; transform: translateY(-30px) scale(1.05); filter: blur(0px); }
-            100% { opacity: 0; transform: translateY(-50px) scale(1.1); filter: blur(10px); }
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(8px); }
+            25% { opacity: 0.8; transform: translateY(0px) scale(1); filter: blur(0px); text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+            75% { opacity: 0.8; transform: translateY(-40px) scale(1.05); filter: blur(0px); text-shadow: 0 0 15px rgba(255,255,255,0.1); }
+            100% { opacity: 0; transform: translateY(-70px) scale(1.1); filter: blur(15px); }
         }
         .zen-word-float {
             position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            animation: driftGently 15s linear forwards; pointer-events: none; z-index: 10;
+            animation: driftGently 18s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; pointer-events: none; z-index: 10;
         }
 
         /* MENU CLICK ẨN/HIỆN */
@@ -67,7 +67,7 @@
         .zen-mode-btn.active { color: #a855f7; background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.3); }
 
         /* ========================================================== */
-        /* CÁC CSS CHÍNH CÒN LẠI GIỮ NGUYÊN                           */
+        /* CÁC CSS CHÍNH */
         /* ========================================================== */
         :root {
             --bg-dark: #050505;
@@ -151,6 +151,10 @@
         
         .dict-row { transition: background 0.2s; }
         .dict-row:hover { background: rgba(255,255,255,0.05); }
+
+        /* Icon sắp xếp */
+        .sort-icon { display: inline-block; width: 12px; height: 12px; margin-left: 4px; vertical-align: middle; opacity: 0.5; transition: all 0.2s;}
+        .sort-active { opacity: 1; color: #3b82f6; }
     </style>
 </head>
 
@@ -162,7 +166,7 @@
     <header class="fixed top-0 w-full glass z-50 h-16 flex items-center justify-between px-6 border-b border-white/5">
         <div class="flex items-center gap-3 cursor-pointer group" onclick="navTo('view-dashboard')">
             <div class="w-2.5 h-2.5 bg-blue-500 rounded-full shadow-[0_0_15px_#3b82f6] group-hover:animate-pulse"></div>
-            <span class="code-font font-bold text-slate-100 text-lg tracking-tight">FOCUS<span class="text-blue-400">_VOCAB</span> <span class="text-[10px] text-slate-500 align-top opacity-50">v0.8.1</span></span>
+            <span class="code-font font-bold text-slate-100 text-lg tracking-tight">FOCUS<span class="text-blue-400">_VOCAB</span> <span class="text-[10px] text-slate-500 align-top opacity-50">v0.8.2</span></span>
         </div>
         
         <div class="flex items-center gap-4">
@@ -177,7 +181,7 @@
                 <button onclick="navTo('view-dict')" class="px-3 sm:px-5 py-2 rounded-lg text-[10px] sm:text-xs font-bold transition-all hover:bg-white/5 hover:text-green-400" id="nav-dict" data-t="nav_dict">TỪ ĐIỂN</button>
                 <button onclick="toggleSettings()" class="px-3 sm:px-4 py-2 rounded-lg text-[10px] sm:text-xs font-bold transition-all hover:bg-white/5 hover:text-blue-400" data-t="nav_keys">CÀI ĐẶT</button>
                 
-                <!-- Nút Zen tối giản -->
+                <!-- Nút Zen -->
                 <button onclick="zenEngine.start()" class="px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs font-black transition-all text-purple-400/80 hover:text-purple-300 hover:bg-purple-500/10 border border-transparent hover:border-purple-500/30 ml-2 code-font tracking-widest flex items-center gap-1.5">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     ZEN
@@ -276,8 +280,8 @@
             <div id="setup-file-list" class="grid grid-cols-1 gap-4 overflow-y-auto max-h-[60vh] pr-4"></div>
         </div>
 
-        <!-- VIEW: TỪ ĐIỂN (DICTIONARY) -->
-        <div id="view-dict" class="hidden-section flex-col w-full max-w-5xl mx-auto gap-6 h-full flex-1">
+        <!-- VIEW: TỪ ĐIỂN (DICTIONARY) - CHUẨN LẠI SPACING (NỚI 10PX MỖI BÊN) -->
+        <div id="view-dict" class="hidden-section flex-col w-full max-w-[1044px] mx-auto gap-6 h-full flex-1">
             <div>
                 <h1 class="text-3xl font-black text-white code-font tracking-tighter" data-t="dict_title">TRUNG TÂM TỪ ĐIỂN</h1>
                 <p class="text-sm text-slate-500 mt-1 font-medium" data-t="dict_subtitle">Nhập tay từ vựng mới hoặc quản lý danh sách hiện tại.</p>
@@ -342,7 +346,7 @@
                     </div>
                     <div class="flex gap-2 w-full md:w-auto">
                         <button onclick="cancelEditWord()" id="dict-btn-cancel" class="hidden flex-1 md:flex-none px-6 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-black rounded-lg transition-all text-xs tracking-widest uppercase">HỦY BỎ</button>
-                        <button onclick="saveDictWord()" id="dict-btn-save" class="flex-1 md:flex-none px-8 py-3 bg-green-600 hover:bg-green-500 text-white font-black rounded-lg transition-all text-xs tracking-widest uppercase shadow-lg shadow-green-900/20" data-t="dict_btn_add">THÊM TỪ</button>
+                        <button onclick="saveDictWord()" id="dict-btn-save" class="flex-1 md:flex-none px-8 py-3 bg-green-600 hover:bg-green-500 text-white font-black rounded-lg transition-all text-xs tracking-widest uppercase shadow-lg shadow-green-900/20 whitespace-nowrap" data-t="dict_btn_add">THÊM TỪ</button>
                     </div>
                 </div>
             </div>
@@ -371,24 +375,27 @@
                         </div>
 
                         <button id="btn-sync-ipa" onclick="syncMissingIPAs()" class="px-4 py-2 bg-cyan-900/30 text-cyan-400 border border-cyan-500/50 hover:bg-cyan-600 hover:text-white rounded-lg text-[10px] font-black tracking-widest transition-all flex items-center gap-2 whitespace-nowrap">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                             <span class="hidden sm:inline">ĐỒNG BỘ IPA</span>
                             <span class="sm:hidden">SYNC</span>
                         </button>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest whitespace-nowrap"><span id="dict-count">0</span> TỪ</div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest whitespace-nowrap ml-2"><span id="dict-count" class="text-white">0</span> TỪ</div>
                     </div>
                 </div>
                 
                 <div id="dict-table-container" class="flex-1 overflow-y-auto overflow-x-hidden">
                     <table class="w-full text-left text-sm table-auto">
-                        <thead class="bg-black/60 text-[10px] text-slate-400 uppercase tracking-widest sticky top-0 z-10 backdrop-blur-md">
+                        <thead class="bg-black/60 text-[10px] text-slate-400 uppercase tracking-widest sticky top-0 z-10 backdrop-blur-md shadow-md">
                             <tr>
-                                <th class="px-4 py-4 font-black w-16 whitespace-nowrap">ID</th>
-                                <th class="px-4 py-4 font-black">Từ Vựng</th>
-                                <th class="px-4 py-4 font-black w-1/3">Nghĩa</th>
-                                <th class="px-4 py-4 font-black text-center w-24 whitespace-nowrap">Trạng Thái</th>
-                                <th class="px-4 py-4 font-black text-right hidden sm:table-cell whitespace-nowrap">File</th>
-                                <th class="px-4 py-4 font-black text-center w-20 whitespace-nowrap">Thao Tác</th>
+                                <th class="px-4 py-4 font-black w-16 whitespace-nowrap border-b border-white/5">ID</th>
+                                <th class="px-4 py-4 font-black border-b border-white/5">Từ Vựng</th>
+                                <th class="px-4 py-4 font-black w-1/3 border-b border-white/5">Nghĩa</th>
+                                <th class="px-4 py-4 font-black text-center w-32 whitespace-nowrap cursor-pointer hover:bg-white/5 transition-colors border-b border-white/5" onclick="toggleSortWeight()" title="Click để sắp xếp theo trọng số">
+                                    Trạng Thái
+                                    <svg id="sort-weight-icon" class="sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                </th>
+                                <th class="px-4 py-4 font-black text-right hidden sm:table-cell whitespace-nowrap border-b border-white/5">File</th>
+                                <th class="px-4 py-4 font-black text-center w-24 whitespace-nowrap border-b border-white/5">Thao Tác</th>
                             </tr>
                         </thead>
                         <tbody id="dict-tbody" class="text-slate-300 divide-y divide-white/5">
@@ -421,7 +428,6 @@
                             <span id="card-id" class="absolute top-6 left-8 text-[10px] code-font text-blue-500 border border-blue-500/30 px-3 py-1 rounded-full uppercase font-black tracking-widest">ID</span>
                             
                             <div id="card-pos" class="absolute top-6 right-8 flex gap-1 hidden">
-                                <!-- POS Pills injected here -->
                             </div>
                             
                             <h2 id="card-word" class="dynamic-word font-black text-white mb-4 tracking-tight break-words max-w-full leading-tight select-none">...</h2>
@@ -521,7 +527,7 @@
         </div>
     </main>
 
-    <!-- ZEN MODE MỚI: CLEAN SCREEN & POPUP MENU -->
+    <!-- ZEN MODE MỚI -->
     <div id="view-zen" class="fixed inset-0 z-[999] hidden flex-col items-center justify-center overflow-hidden" onclick="zenEngine.toggleMenu(event)">
         <div class="noise-overlay"></div>
         <div id="zen-canvas" class="relative w-full h-full z-10 overflow-hidden pointer-events-none"></div>
@@ -694,6 +700,7 @@
         let dictSearchTerm = "";
         let lastDictSearchTerm = "";
         let currentDictPage = 1;
+        let sortWeightState = 0; // 0: Bình thường, 1: Giảm dần (Cao -> Thấp), 2: Tăng dần (Thấp -> Cao)
 
         let editingWordCtx = null;
         const validPOS = ['n', 'v', 'adj', 'adv', 'prep', 'conj', 'pron', 'det', 'num', 'int', 'phr', 'idiom'];
@@ -709,58 +716,29 @@
             document.getElementById('setting-dict-per-page').value = globalMeta.dictPerPage || 20;
 
             navTo('view-dashboard');
-            
-            // --- HỆ THỐNG ENGINE CHỐNG QUÊN (MEMORY DECAY) ---
             applyMemoryDecay();
             
-            console.log("Focus Vocab v0.8.1 Ready - Deep Memory Engine Active");
+            console.log("Focus Vocab v0.8.2 Ready - Auto IPA & UI Tweaks Active (Layout Fixed)");
         };
 
-        // =====================================================================
-        // ENGINE TRÍ NHỚ (MEMORY DECAY & RESILIENCE) - V0.8.1
-        // Tùy chỉnh các hằng số dưới đây để phù hợp với não bộ của bạn!
-        // =====================================================================
         function applyMemoryDecay() {
             let changed = false;
             let decayedCount = 0;
             const now = Date.now();
-            
-            // [TÙY CHỈNH 1]: Số ngày bỏ bê trước khi bị trừ điểm (Mặc định: 3 ngày)
             const DECAY_DAYS = 5; 
             const DECAY_MS = DECAY_DAYS * 24 * 60 * 60 * 1000;
-            
-            // [TÙY CHỈNH 2]: Hình phạt gốc - Điểm cộng thêm khi bị quên (Mặc định: +25 điểm)
-            // Lần đầu bị phạt, từ đang ở mức 0 (Đã Thuộc) sẽ bị đẩy lên 25 (Tạm Nhớ)
             const BASE_PENALTY = 20; 
-            
-            // [TÙY CHỈNH 3]: Hệ số Kháng Thẹo (Resilience Factor) - Mặc định: Giảm 5 điểm
-            // Nếu gõ lại ĐÚNG SAU KHI BỊ DECAY -> Nhận 1 điểm Kháng. Lần sau phạt sẽ nhẹ hơn.
             const RESILIENCE_FACTOR = 5; 
-            
-            // [TÙY CHỈNH 4]: Mức phạt Tối thiểu để tránh việc Kháng quá cao dẫn đến... không thèm phạt.
             const MIN_PENALTY = 5; 
 
             Object.keys(db).forEach(f => {
                 db[f].data.forEach(item => {
-                    // Khởi tạo chỉ số ngầm nếu data cũ chưa có
                     if (!item.stats.resilience) item.stats.resilience = 0;
-
-                    // KIỂM TRA: Chỉ vác những từ "Đã Thuộc" (Weight < 20) ra phạt
                     if (item.stats.weight < 20 && item.stats.lastReviewed) {
-                        // Nếu lặn quá số ngày quy định
                         if (now - item.stats.lastReviewed >= DECAY_MS) {
-                            
-                            // TOÁN HỌC KHÁNG THẸO (THE MATH)
-                            // Phạt = Phạt Gốc - (Số lần đã vực dậy thành công * Hệ số kháng)
                             let penalty = Math.max(MIN_PENALTY, BASE_PENALTY - (item.stats.resilience * RESILIENCE_FACTOR));
-
-                            // Cộng điểm phạt vào Weight
                             item.stats.weight = Math.min(100, item.stats.weight + penalty);
-                            
-                            // Gắn cờ "Đang bị phạt". Nếu lôi cờ này vào Terminal mà gõ đúng -> Sẽ được cộng điểm Kháng
                             item.stats.isDecayed = true; 
-                            
-                            // Reset đồng hồ để đếm lại 3 ngày tiếp theo
                             item.stats.lastReviewed = now; 
                             changed = true;
                             decayedCount++;
@@ -771,13 +749,12 @@
 
             if (changed) {
                 saveDB();
-                renderDashboard(); // Vẽ lại Dashboard cho chuẩn số liệu
+                renderDashboard(); 
                 setTimeout(() => {
                     showToast(`Memory Engine: ${decayedCount} từ đã bị đẩy lùi trí nhớ do ${DECAY_DAYS} ngày không ôn!`, "info");
                 }, 1000);
             }
         }
-        // =====================================================================
 
         function getInitLetter(word) {
             if(!word) return 'X';
@@ -840,10 +817,8 @@
                     if(item.concept_id !== undefined) { delete item.concept_id; changed = true; }
                     if (!item.stats) { item.stats = { weight: 50, timesSeen: 0, resilience: 0 }; changed = true; }
                     
-                    // Migrate bổ sung cho data cũ
                     if (item.stats.weight === undefined) item.stats.weight = 50;
                     if (item.stats.resilience === undefined) { item.stats.resilience = 0; changed = true; }
-                    
                     if (item.ipa === undefined) { item.ipa = ''; changed = true; }
 
                     if (!item.id || item.id.length > 10) {
@@ -1000,6 +975,23 @@
             }
         }
 
+        function toggleSortWeight() {
+            sortWeightState = (sortWeightState + 1) % 3;
+            const icon = document.getElementById('sort-weight-icon');
+            
+            if (sortWeightState === 0) {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>`;
+                icon.classList.remove('sort-active');
+            } else if (sortWeightState === 1) {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>`;
+                icon.classList.add('sort-active');
+            } else {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>`;
+                icon.classList.add('sort-active');
+            }
+            renderDictTable();
+        }
+
         function renderDictTable() {
             const tbody = document.getElementById('dict-tbody');
             tbody.innerHTML = '';
@@ -1023,7 +1015,14 @@
                 );
             }
 
-            list.sort((a, b) => (a.id || "").localeCompare(b.id || "", undefined, {numeric: true}));
+            // SẮP XẾP
+            if (sortWeightState === 1) {
+                list.sort((a, b) => b.stats.weight - a.stats.weight); // Cao xuống thấp
+            } else if (sortWeightState === 2) {
+                list.sort((a, b) => a.stats.weight - b.stats.weight); // Thấp lên cao
+            } else {
+                list.sort((a, b) => (a.id || "").localeCompare(b.id || "", undefined, {numeric: true})); // Bình thường (ID)
+            }
 
             document.getElementById('dict-count').innerText = list.length;
 
@@ -1062,7 +1061,7 @@
                         </div>
                     </td>
                     <td class="px-4 py-4 text-slate-300 whitespace-normal break-words min-w-[150px] align-top leading-relaxed">${item.translation}</td>
-                    <td class="px-4 py-4 text-center ${weightColor} font-black whitespace-nowrap align-top">${item.stats.weight}</td>
+                    <td class="px-4 py-4 text-center ${weightColor} font-black whitespace-nowrap align-top text-base">${item.stats.weight}</td>
                     <td class="px-4 py-4 text-right text-xs ${item._file === DEFAULT_VAULT ? 'text-purple-400 font-bold' : 'text-slate-500'} font-mono whitespace-nowrap hidden sm:table-cell align-top">${item._file.replace('.json','')}</td>
                     <td class="px-4 py-4 text-center whitespace-nowrap align-top">
                         <div class="flex justify-center gap-2">
@@ -1093,16 +1092,34 @@
             container.innerHTML = `
                 <div class="flex items-center gap-4 w-full justify-center">
                     <button onclick="changeDictPage(-1)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed" ${currentDictPage === 1 ? 'disabled' : ''}>« TRƯỚC</button>
-                    <span class="text-[11px] text-slate-400 font-mono font-black mx-4">TRANG ${currentDictPage} / ${totalPages}</span>
+                    
+                    <div class="flex items-center gap-2 mx-2">
+                        <span class="text-[10px] text-slate-500 font-black uppercase">Trang</span>
+                        <input type="number" id="page-jump-input" value="${currentDictPage}" min="1" max="${totalPages}" onkeydown="handlePageJump(event, ${totalPages})" class="w-12 bg-slate-900 border border-slate-700 rounded px-1 py-1 text-white outline-none focus:border-blue-500 font-mono text-center text-xs font-bold">
+                        <span class="text-[10px] text-slate-500 font-black">/ ${totalPages}</span>
+                    </div>
+
                     <button onclick="changeDictPage(1)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-[10px] uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed" ${currentDictPage === totalPages ? 'disabled' : ''}>SAU »</button>
                 </div>
             `;
         }
 
+        function handlePageJump(e, totalPages) {
+            if (e.key === 'Enter') {
+                let val = parseInt(e.target.value);
+                if (!isNaN(val)) {
+                    if (val < 1) val = 1;
+                    if (val > totalPages) val = totalPages;
+                    currentDictPage = val;
+                    renderDictTable();
+                    document.getElementById('dict-table-container').scrollTop = 0;
+                }
+            }
+        }
+
         function changeDictPage(delta) {
             currentDictPage += delta;
             renderDictTable();
-            
             const tableContainer = document.getElementById('dict-table-container');
             if(tableContainer) {
                 tableContainer.scrollTop = 0;
@@ -1193,10 +1210,11 @@
             btn.innerHTML = originalText;
         }
 
+        // ĐỔI SANG ASYNC ĐỂ AUTO FETCH IPA TRƯỚC KHI LƯU
         async function saveDictWord() {
             const wordInput = document.getElementById('dict-input-word');
             const word = wordInput.value.trim();
-            const ipa = document.getElementById('dict-input-ipa').value.trim();
+            let ipa = document.getElementById('dict-input-ipa').value.trim();
             const trans = document.getElementById('dict-input-trans').value.trim();
             let file = document.getElementById('dict-input-file').value || DEFAULT_VAULT;
             
@@ -1236,6 +1254,18 @@
             if (isDuplicate) {
                 const posText = pos ? ` (${pos})` : '';
                 return showToast(`Từ '${word}'${posText} đã tồn tại trong ${dupLocation}!`, "error");
+            }
+
+            // AUTO IPA HACK
+            const btnSave = document.getElementById('dict-btn-save');
+            const originBtnText = btnSave.innerText;
+            if (!ipa) {
+                btnSave.innerText = "ĐANG TÌM IPA...";
+                btnSave.disabled = true;
+                const fetchedIpa = await fetchAndCleanIPA(word);
+                if (fetchedIpa) ipa = fetchedIpa;
+                btnSave.disabled = false;
+                btnSave.innerText = originBtnText;
             }
 
             if(!db[file]) {
@@ -1474,7 +1504,6 @@
             session.startTime = Date.now();
         }
 
-        // HỆ THỐNG ĐIỂM SỐ ELO CÓ TÍCH HỢP TĂNG TRƯỞNG KHÁNG THẸO (RESILIENCE) - V0.8.1
         function submitAnswer(type) {
             const entry = session.queue[session.index];
             const item = db[entry.file].data[entry.idx];
@@ -1484,26 +1513,18 @@
             item.stats.lastReviewed = Date.now();
 
             let xp = 0;
-            
-            // Lấy trạng thái Decay trước khi reset để xét thưởng
             const wasDecayed = item.stats.isDecayed;
-            item.stats.isDecayed = false; // Lôi ra test xong là lột cờ Phạt
+            item.stats.isDecayed = false; 
 
             if (session.mode === 'terminal') {
                 if (type === 'known') {
                     if (session.cardState.hintUsed) {
                         item.stats.weight = Math.min(100, item.stats.weight + 40); 
                         xp = 1;
-                        // Phạt: Giảm đề kháng vì phải xài phao
                         if (wasDecayed) item.stats.resilience = Math.max(0, (item.stats.resilience || 0) - 1);
                     } else if (session.cardState.attempts === 0) {
-                        // PERFECT: Gõ đúng ngay lần đầu
                         item.stats.weight = Math.max(0, item.stats.weight - 35); 
                         xp = 50;
-                        
-                        // --- LOGIC TĂNG KHÁNG THẸO ---
-                        // Vừa bị Decay dìm xuống mà vẫn gõ đúng ngay -> Não đã ghi nhớ rất sâu
-                        // Tăng 1 điểm kháng. Lần sau Decay sẽ yếu đi.
                         if (wasDecayed) {
                             item.stats.resilience = (item.stats.resilience || 0) + 1;
                         }
@@ -1515,18 +1536,15 @@
                             item.stats.weight = Math.max(20, item.stats.weight - 10);
                             xp = 10;
                         }
-                        // Sai 1 nhịp thì không thưởng Kháng, nhưng cũng có thể trừ nhẹ
                         if (wasDecayed) item.stats.resilience = Math.max(0, (item.stats.resilience || 0) - 1);
                     } else {
                         item.stats.weight = Math.min(100, item.stats.weight + 30);
                         xp = 2;
-                        // Vỡ khiên -> Đề kháng yếu đi
                         if (wasDecayed) item.stats.resilience = Math.max(0, (item.stats.resilience || 0) - 1);
                     }
                     session.stats.correct++;
                 }
             } else {
-                // CHẾ ĐỘ FLASHCARD THỤ ĐỘNG
                 if (type === 'known') {
                     if (item.stats.weight >= 20) {
                         item.stats.weight = Math.max(20, item.stats.weight - 15); 
@@ -1542,7 +1560,6 @@
                     item.stats.weight = Math.min(100, item.stats.weight + 25); 
                     xp = 0;
                 }
-                // Flashcard là học thụ động, nên KHÔNG TẶNG ĐIỂM KHÁNG dù có là từ bị Decay.
             }
 
             session.stats.xp += xp;
@@ -1565,7 +1582,7 @@
         }
 
         // =================================================================================
-        // HỆ THỐNG ZEN MODE ENGINE - CLEAN UI, CLICK TO OPEN MENU
+        // HỆ THỐNG ZEN MODE ENGINE - REWORK CHÒM SAO
         // =================================================================================
         const zenEngine = {
             view: document.getElementById('view-zen'),
@@ -1576,18 +1593,16 @@
             intervalIds: [],
             isActive: false,
 
-            // Thêm 2 biến này để quản lý danh sách đã sort
             sortedPool: [],
             currentIndex: 0,
+            quadrant: 0, // Dùng để chia màn hình thành 4 góc tránh đè chữ
 
-            // Xóa getRandomVocab cũ, thay bằng hàm lấy từ theo thứ tự này:
             getNextVocab: function() {
                 if (!this.sortedPool || this.sortedPool.length === 0) {
                     return { word: "Empty", ipa: "/.../", translation: "Không có từ vựng nào trong kho." };
                 }
                 const w = this.sortedPool[this.currentIndex];
                 this.currentIndex++;
-                // Chạy hết danh sách thì vòng lại từ đầu
                 if (this.currentIndex >= this.sortedPool.length) {
                     this.currentIndex = 0;
                 }
@@ -1606,16 +1621,13 @@
                 this.view.classList.remove('hidden', 'zen-fade-out');
                 this.view.classList.add('flex', 'zen-fade-in');
                 
-                // Ẩn menu khi mới vào
                 this.menuPanel.classList.remove('active');
                 
-                // Hiện hint mờ mờ để nhắc người dùng cách mở menu
                 this.hint.style.opacity = '0.4';
                 setTimeout(() => {
                     if (this.isActive) this.hint.style.opacity = '0';
                 }, 4000);
 
-                // Khởi động vào mode Hư Vô mặc định
                 this.switchMode('void');
             },
 
@@ -1637,10 +1649,8 @@
 
             toggleMenu: function(e) {
                 if (!this.isActive) return;
-                // Nếu click vào background thì toggle cái menu
                 this.menuPanel.classList.toggle('active');
                 
-                // Nếu mở menu thì giấu luôn dòng hint cho sạch
                 if (this.menuPanel.classList.contains('active')) {
                     this.hint.style.opacity = '0';
                 }
@@ -1659,7 +1669,6 @@
                 document.querySelectorAll('.zen-mode-btn').forEach(b => b.classList.remove('active'));
                 document.getElementById(`zen-btn-${newMode}`).classList.add('active');
                 
-                // Đổi mode xong là tự đóng menu lại để ngắm
                 this.menuPanel.classList.remove('active');
 
                 if (newMode === 'void') this.runVoidMode();
@@ -1688,30 +1697,49 @@
             },
 
             runConstellationMode: function() {
-                const maxWords = 4; let activeCount = 0;
+                const maxWords = 4; 
+                let activeCount = 0;
+                this.quadrant = 0; // Reset khu vực spawn
+
                 const spawnFloat = () => {
                     if (!this.isActive || activeCount >= maxWords) return;
                     const w = this.getNextVocab();
                     const el = document.createElement('div');
                     el.className = 'zen-word-float'; 
                     
-                    const startX = 15 + Math.random() * 70; 
-                    const startY = 30 + Math.random() * 50; 
+                    // Logic chia màn hình thành 4 phần (Quadrants) để tránh chồng chữ
+                    // Q0: Trái Trên | Q1: Phải Trên | Q2: Trái Dưới | Q3: Phải Dưới
+                    const qX = (this.quadrant % 2) * 50; 
+                    const qY = Math.floor(this.quadrant / 2) * 50; 
                     
-                    el.style.left = `${startX}%`; el.style.top = `${startY}%`;
-                    const scale = 0.6 + Math.random() * 0.5; el.style.transform = `scale(${scale})`;
+                    const startX = qX + 10 + Math.random() * 25; // Random trong khoảng 10-35% của mỗi góc
+                    const startY = qY + 10 + Math.random() * 25; 
+                    
+                    this.quadrant = (this.quadrant + 1) % 4; // Xoay vòng
+
+                    el.style.left = `${startX}%`; 
+                    el.style.top = `${startY}%`;
+                    const scale = 0.8 + Math.random() * 0.4; 
+                    el.style.transform = `scale(${scale})`;
 
                     el.innerHTML = `
-                        <div class="text-center px-4">
-                            <h2 class="text-3xl md:text-5xl serif-font text-white/80 tracking-wide mb-2 break-words max-w-sm">${w.word}</h2>
-                            <p class="text-[9px] md:text-xs text-purple-400/60 code-font tracking-[0.2em] mb-3">${w.ipa || '...'}</p>
-                            <p class="text-[10px] md:text-sm text-slate-400 font-light tracking-[0.2em] uppercase max-w-xs break-words">${w.translation}</p>
+                        <div class="text-center px-4 flex flex-col items-center">
+                            <div class="w-1.5 h-1.5 bg-purple-400 rounded-full mb-3 shadow-[0_0_10px_#a855f7] animate-pulse"></div>
+                            <h2 class="text-4xl md:text-5xl serif-font text-white/90 tracking-wide mb-2 break-words max-w-sm drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">${w.word}</h2>
+                            <p class="text-[10px] md:text-xs text-purple-400/80 code-font tracking-[0.2em] mb-3">${w.ipa || '...'}</p>
+                            <p class="text-[11px] md:text-sm text-slate-300 font-light tracking-[0.2em] uppercase max-w-xs break-words drop-shadow-[0_0_5px_rgba(0,0,0,0.8)]">${w.translation}</p>
                         </div>
                     `;
-                    this.canvas.appendChild(el); activeCount++;
-                    setTimeout(() => { if (this.canvas.contains(el)) { el.remove(); activeCount--; } }, 15000); 
+                    this.canvas.appendChild(el); 
+                    activeCount++;
+                    
+                    setTimeout(() => { 
+                        if (this.canvas.contains(el)) { el.remove(); activeCount--; } 
+                    }, 18000); 
                 };
-                spawnFloat(); this.intervalIds.push(setInterval(spawnFloat, 4000)); 
+                
+                spawnFloat(); 
+                this.intervalIds.push(setInterval(spawnFloat, 4500)); 
             }
         };
 
