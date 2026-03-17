@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOCUS_VOCAB v0.8.2 - Zen Refined</title>
+    <title>FOCUS_VOCAB v0.8.5 - Centralized Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600&family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -166,7 +166,7 @@
     <header class="fixed top-0 w-full glass z-50 h-16 flex items-center justify-between px-6 border-b border-white/5">
         <div class="flex items-center gap-3 cursor-pointer group" onclick="navTo('view-dashboard')">
             <div class="w-2.5 h-2.5 bg-blue-500 rounded-full shadow-[0_0_15px_#3b82f6] group-hover:animate-pulse"></div>
-            <span class="code-font font-bold text-slate-100 text-lg tracking-tight">FOCUS<span class="text-blue-400">_VOCAB</span> <span class="text-[10px] text-slate-500 align-top opacity-50">v0.8.2</span></span>
+            <span class="code-font font-bold text-slate-100 text-lg tracking-tight">FOCUS<span class="text-blue-400">_VOCAB</span> <span class="text-[10px] text-slate-500 align-top opacity-50">v0.8.5</span></span>
         </div>
         
         <div class="flex items-center gap-4">
@@ -718,7 +718,7 @@
             navTo('view-dashboard');
             applyMemoryDecay();
             
-            console.log("Focus Vocab v0.8.2 Ready - Auto IPA & UI Tweaks Active (Layout Fixed)");
+            console.log("Focus Vocab v0.8.5 Ready - Centralized Vault & Strict Duplicate Check Active");
         };
 
         function applyMemoryDecay() {
@@ -1922,22 +1922,50 @@
                         reindexAllDB(); 
                         showToast("Đã Restore dữ liệu", "success");
                     } else {
-                        let fileName = file.name;
-                        if (fileName === DEFAULT_VAULT) fileName = "Imported_" + fileName;
-                        
                         const incoming = Array.isArray(json) ? json : (json.data || []);
-                        
-                        const formatted = incoming.map(x => ({
-                            id: generateVocabId(x.word),
-                            word: x.word,
-                            ipa: x.ipa || '',
-                            translation: x.translation,
-                            pos: x.pos || '',
-                            stats: x.stats || { weight: 50, timesSeen: 0, resilience: 0 }
-                        }));
-                        db[fileName] = { data: formatted, lastAccess: Date.now() };
+                        let addedCount = 0;
+                        let skippedCount = 0;
+
+                        // Đảm bảo APP_VAULT luôn tồn tại để hứng data
+                        if (!db[DEFAULT_VAULT]) {
+                            db[DEFAULT_VAULT] = { data: [], lastAccess: Date.now() };
+                        }
+
+                        incoming.forEach(x => {
+                            const normWord = (x.word || '').trim().toLowerCase();
+                            const normPos = (x.pos || '').trim().toLowerCase();
+
+                            // Quét toàn bộ DB xem combo (Word + POS) đã tồn tại chưa
+                            let isDuplicate = false;
+                            for (const f in db) {
+                                const found = db[f].data.some(item => 
+                                    (item.word || '').trim().toLowerCase() === normWord && 
+                                    (item.pos || '').trim().toLowerCase() === normPos
+                                );
+                                if (found) {
+                                    isDuplicate = true;
+                                    break;
+                                }
+                            }
+
+                            // Nếu chưa có thì nạp thẳng vào APP_VAULT
+                            if (!isDuplicate) {
+                                db[DEFAULT_VAULT].data.push({
+                                    id: generateVocabId(x.word),
+                                    word: x.word,
+                                    ipa: x.ipa || '',
+                                    translation: x.translation,
+                                    pos: x.pos || '',
+                                    stats: x.stats || { weight: 50, timesSeen: 0, resilience: 0 }
+                                });
+                                addedCount++;
+                            } else {
+                                skippedCount++; // Đếm số từ bị đá văng
+                            }
+                        });
+
                         reindexAllDB(); 
-                        showToast("Đã thêm từ vựng thành công", "success");
+                        showToast(`Nạp ${addedCount} từ vào APP_VAULT (Bỏ qua ${skippedCount} từ trùng)`, "success");
                     }
                     saveDB(); saveGlobalMeta(); navTo('view-setup');
                 } catch(err) { showToast("File JSON bị lỗi định dạng", "error"); }
